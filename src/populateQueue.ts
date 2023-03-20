@@ -54,9 +54,9 @@ export async function getFiles({
         if (!!filterOldMinutes) {
           if (
             now <= new Date(statFile.mtime) ||
-            now <= new Date(statFile.ctime) ||
-            now <= new Date(statFile.birthtime) ||
-            now <= new Date(statFile.atime)
+            now <= new Date(statFile.ctime) //||
+            // now <= new Date(statFile.birthtime) ||
+            // now <= new Date(statFile.atime)
           ) {
             return textFile;
           }
