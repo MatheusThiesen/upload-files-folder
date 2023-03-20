@@ -27,11 +27,20 @@ export async function populateQueue(listFiles: QueueTask[]) {
   }
 }
 
-export async function getFiles() {
+export async function getFiles({
+  filterOldMinutes,
+}: {
+  filterOldMinutes?: number;
+}) {
   var normalized: QueueTask[] = [];
   var re = /\.(JPEG|JPG|PDF|PNG|Pdf|gif|jfif|jpeg|jpg|pdf|png)$/;
 
   const readdirSync = fs.readdirSync(path.resolve(importPath));
+
+  var now: Date = new Date();
+  if (filterOldMinutes) {
+    now.setMinutes(now.getMinutes() - filterOldMinutes);
+  }
 
   var matches = readdirSync
     .filter((text) => re.test(text))
@@ -42,7 +51,18 @@ export async function getFiles() {
       } catch (error) {}
 
       if (statFile) {
-        return textFile;
+        if (!!filterOldMinutes) {
+          if (
+            now <= new Date(statFile.mtime) ||
+            now <= new Date(statFile.ctime) ||
+            now <= new Date(statFile.birthtime) ||
+            now <= new Date(statFile.atime)
+          ) {
+            return textFile;
+          }
+        } else {
+          return textFile;
+        }
       }
 
       return;
