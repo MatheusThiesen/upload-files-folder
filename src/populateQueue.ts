@@ -51,7 +51,7 @@ export async function getFiles({
       } catch (error) {}
 
       if (statFile) {
-        if (!!filterOldMinutes) {
+        if (!filterOldMinutes) {
           if (
             now <= new Date(statFile.mtime) ||
             now <= new Date(statFile.ctime) //||
